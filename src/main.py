@@ -8,7 +8,7 @@ from drawImgAndHist import drawImgAndHist as dih
 class Main:
 
 	path = ''
-	img = ''
+	img = None
 	count = None
 
 	def __init__(self):
@@ -25,13 +25,13 @@ class Main:
 
 	def load(self, loadFromCmd):
 		if(loadFromCmd == False):
-			self.path = input('Insert new path:\n')
+			self.path = input('Insert new path: ')
 		loadType = input("Choose image loading type:\n0) Grayscale Image\n1) Color image\n")
 		self.img = cv2.imread(self.path, int(loadType))
 
 	def histogram(self):
 		self.count = pcc(self.img)
-		showHist = input("Do you want to view the pixel's histogram of colors? [Y,n]\n") or 'y'
+		showHist = input("Do you want to view the pixel's histogram of colors? [Y,n] ") or 'y'
 		if(showHist.lower() == 'y'):
 			dih(self.img, self.count)
 
