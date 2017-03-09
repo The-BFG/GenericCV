@@ -5,6 +5,7 @@ import numpy
 from pixelColorCounter import pixelColorCounter as pcc
 from drawImgAndHist import drawImgAndHist as dih
 from linearPointOperator import contrastBrightness
+from ContrastStretching import ContrastStretching as cs
 
 class Main:
 
@@ -22,7 +23,7 @@ class Main:
 			self.load(True)
 
 		while (True):
-			self.switch(input("Choose:\n1) Load image\n2) Generete the image pixel's color counter (and relatives histogram)\n3) Change contrast and brightness\n0) Exit program\n"))
+			self.switch(input("Choose:\n1) Load image\n2) Show image\n3) Generete the image pixel's color counter (and relatives histogram)\n4) Change contrast and brightness\n5) Contrast stretching\n0) Exit program\n"))
 
 	def load(self, loadFromCmd):
 		if(loadFromCmd == False):
@@ -31,6 +32,10 @@ class Main:
 		self.img = cv2.imread(self.path, int(loadType))
 		if(self.img.ndim == 2):
 			self.img = numpy.expand_dims(self.img, axis=2)
+	
+	def show(self):
+		cv2.imshow('Image',self.img)
+		cv2.waitKey()
 
 	def histogram(self):
 		self.count = pcc(self.img)
@@ -40,14 +45,19 @@ class Main:
 
 	def changeContrastBrightness(self):
 		self.img = contrastBrightness(self.img)
+		
+	def stretchContrast(self):
+		self.img = cs(self.img)
 
 	def switch(self, argument):
 		if(argument == '0'):
 			sys.exit(0)
 		fun, param = {
 			'1': (self.load, False),
-			'2': (self.histogram, None),
-			'3': (self.changeContrastBrightness, None)
+			'2': (self.show, None),
+			'3': (self.histogram, None),
+			'4': (self.changeContrastBrightness, None),
+			'5': (self.stretchContrast, None)
 		}.get(argument)
 		if(param is None):
 			fun()
