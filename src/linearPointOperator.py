@@ -8,10 +8,12 @@ def contrastBrightness(img):
 	brightness = int(input("Insert the value of the brightness: "))
 	h,w,c=img.shape
 	
-	for channel,i,j in product(range(0,c), range(0,h), range(0,w))
+	for channel,i,j in product(range(0,c), range(0,h), range(0,w)):
 		img[i,j,channel] = (img[i,j,channel]*contrast)+brightness
 		if(img[i,j,channel]> top):
 			img[i,j,channel] = 255
 		elif(img[i,j,channel] < 0):
 			img[i,j,channel] = 0
+	cv2.imshow('Image',img)
+	cv2.waitKey()
 	return img
