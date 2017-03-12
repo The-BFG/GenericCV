@@ -2,7 +2,7 @@ import cv2 as cv
 import numpy as np
 from itertools import product
 
-def ContrastStretching(img):
+def contrastStretching(img):
 	m = np.min(img)
 	M = np.max(img)
 	#print(img.shape)
