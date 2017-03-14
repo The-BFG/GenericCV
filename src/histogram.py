@@ -15,7 +15,6 @@ def display(img, histogram):
 		img = img[:,:,0]
 		cmap = 'gray'
 	elif(c == 3):
-		print(img.shape)
 		img = cv2.cvtColor(img.astype(numpy.uint8), cv2.COLOR_BGR2RGB)  # for visualization
 		cmap = None
 	else:

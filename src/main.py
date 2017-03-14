@@ -52,7 +52,11 @@ class Main:
 			self.img = numpy.expand_dims(self.img, axis=2)
 
 	def show(self):
+
+		cv2.namedWindow('Image',cv2.WINDOW_FREERATIO)
+		cv2.resizeWindow('Image', 100, 100)
 		cv2.imshow('Image', self.img)
+
 		cv2.waitKey()
 		cv2.destroyAllWindows()
 
@@ -85,6 +89,7 @@ class Main:
 		self.img = numpy.sqrt(gradx ^ 2 + grady ^ 2).astype(numpy.uint8)
 
 	def canny(self):
+
 		gradx = convolution(self.img, (1 / 8) * numpy.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]]))
 		grady = convolution(self.img, (1 / 8) * numpy.array([[1, 2, 1], [0, 0, 0], [-1, -2, -1]]))
 		grad = numpy.sqrt(gradx ^ 2 + grady ^ 2).astype(numpy.uint8)
@@ -121,10 +126,14 @@ class Main:
 
 		for i in range(1, h - 1):
 			for j in range(1, w - 1):
-				if (grad[i, j] > tl and (grad[i - 1, j - 1] > th or grad[i - 1, j] > th or grad[i - 1, j + 1] > th or grad[i, j - 1] > th or grad[i, j + 1] > th or grad[i + 1, j - 1] > th or grad[i + 1, j] > th or grad[i + 1, j] > th)):
+				if (self.img[i, j] > tl and (self.img[i - 1, j - 1] > th or self.img[i - 1, j] > th or self.img[i - 1, j + 1] > th or self.img[i, j - 1] > th or self.img[i, j + 1] > th or self.img[i + 1, j - 1] > th or self.img[i + 1, j] > th or self.img[i + 1, j] > th)):
 					self.img[i, j] = 128
-				if (grad[i, j] > th):
+				if (self.img[i, j] > th):
 					self.img[i, j] = 255
+				#if (grad[i, j] > tl and (grad[i - 1, j - 1] > th or grad[i - 1, j] > th or grad[i - 1, j + 1] > th or grad[i, j - 1] > th or grad[i, j + 1] > th or grad[i + 1, j - 1] > th or grad[i + 1, j] > th or grad[i + 1, j] > th)):
+				#	self.img[i, j] = 128
+				#if (grad[i, j] > th):
+				#	self.img[i, j] = 255
 
 if __name__ == "__main__":
 	Main(sys.argv[1:])
