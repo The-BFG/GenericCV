@@ -22,7 +22,9 @@ class Main:
 			'5': ("Apply contrast stretching", self.stretchContrast),
 			'6': ("Make a threshold", self.makeThreshold),
 			'7': ("Otzu threashold on the image", self.makeOtsu),
-			'8': ("Convolution", self.performConvolution)
+			'8': ("Convolution", self.performConvolution),
+			'9': ("Sobel", self.sobel),
+			'10': ("Canny", self.canny)
 
 		}
 
@@ -74,7 +76,55 @@ class Main:
 		self.img = threshold(self.img, otsu(self.histogram))
 
 	def performConvolution(self):
-		self.img = convolution(self.img)
+		self.img = convolution(self.img, (1/16)*numpy.array([[1, 2, 1], [2, 4, 2], [1, 2, 1]]))
+		print(self.img)
+
+	def sobel(self):
+		gradx = convolution(self.img, (1 / 8) * numpy.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]]))
+		grady = convolution(self.img, (1 / 8) * numpy.array([[1, 2, 1], [0, 0, 0], [-1, -2, -1]]))
+		self.img = numpy.sqrt(gradx ^ 2 + grady ^ 2).astype(numpy.uint8)
+
+	def canny(self):
+		gradx = convolution(self.img, (1 / 8) * numpy.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]]))
+		grady = convolution(self.img, (1 / 8) * numpy.array([[1, 2, 1], [0, 0, 0], [-1, -2, -1]]))
+		grad = numpy.sqrt(gradx ^ 2 + grady ^ 2).astype(numpy.uint8)
+
+		tan = numpy.arctan(grady / gradx)
+		h, w, c = numpy.array(grad).shape
+
+		max = numpy.max(grad)
+		tl = 0.90 * max
+		th = 0.99 * max
+
+		for i in range(1,h-1):
+			for j in range(1,w-1):
+				m = tan[i,j]
+				if gradx[i,j] > grady[i,j]:
+					if m > 0:
+						gradP1 = grad[i + 1, j - 1] * m + grad[i + 1, j] * (1 - m)
+						gradP2 = grad[i - 1, j + 1] * m + grad[i - 1, j] * (1 - m)
+					else:
+						gradP1 = grad[i + 1, j + 1] * m + grad[i + 1, j] * (1 - m)
+						gradP2 = grad[i - 1, j - 1] * m + grad[i - 1, j] * (1 - m)
+				else:
+					if m > 0:
+						gradP1 = grad[i + 1, j - 1] * m + grad[i, j - 1] * (1 - m)
+						gradP2 = grad[i - 1, j + 1] * m + grad[i, j + 1] * (1 - m)
+					else:
+						gradP1 = grad[i - 1, j - 1] * m + grad[i, j - 1] * (1 - m)
+						gradP2 = grad[i + 1, j + 1] * m + grad[i, j + 1] * (1 - m)
+				if(grad[i,j] >= gradP1 and grad[i,j] >= gradP2):
+					# Valid edge
+					self.img[i, j] = 255/max*grad[i,j]
+				else:
+					self.img[i,j] = 0
+
+		for i in range(1, h - 1):
+			for j in range(1, w - 1):
+				if (grad[i, j] > tl and (grad[i - 1, j - 1] > th or grad[i - 1, j] > th or grad[i - 1, j + 1] > th or grad[i, j - 1] > th or grad[i, j + 1] > th or grad[i + 1, j - 1] > th or grad[i + 1, j] > th or grad[i + 1, j] > th)):
+					self.img[i, j] = 128
+				if (grad[i, j] > th):
+					self.img[i, j] = 255
 
 if __name__ == "__main__":
 	Main(sys.argv[1:])
