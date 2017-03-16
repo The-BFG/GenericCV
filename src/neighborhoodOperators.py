@@ -46,17 +46,23 @@ def gauss_kernel(kernel_radius):
 	
 def dilatate(img):
 	h,w,c = img.shape
+	img = img[:,:,0]
+	new = numpy.zeros((h,w,c))
 	for i in range(1,h-1):
 		for j in range(1,w-1):
-			img[i,j,:] = numpy.max(img[i-1:i+1,j-1:j+1,:])	
-	return img
+			new[i,j,:] = numpy.max(img[i-1:i+2,j-1:j+2,])	
+			#print(img[i-1:i+2,j-1:j+2])
+			#print(new[i,j])
+	return new.astype(numpy.uint8)
+	
 
 def erode(img):
 	h,w,c = img.shape
+	new = numpy.zeros((h,w,c))
 	for i in range(1,h-1):
 		for j in range(1,w-1):
-			img[i,j,:] = numpy.min(img[i-1:i+1,j-1:j+1,:])			
-	return img
+			new[i,j,:] = numpy.min(img[i-1:i+2,j-1:j+2,:])			
+	return new.astype(numpy.uint8)
 		
 def closing(img):
 	return erode(dilatate(img))

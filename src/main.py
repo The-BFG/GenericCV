@@ -138,7 +138,7 @@ class Main:
 				#if (grad[i, j] > th):
 				#	self.img[i, j] = 255
 				
-	def mophology(self):
+	def morphology(self):
 		opt = input("Which kind of morphology operation do you want to do:\na) Dilatate\nb) Erode\nc) Opening\nd) Closing\ne) Gradient")
 		if(opt == 'a'):
 			self.img = dilatate(self.img)
