@@ -28,6 +28,7 @@ class Main:
 			'9': ("Sobel", self.sobel),
 			'10': ("Canny", self.canny),
 			'11': ("Morphology", self.morphology)
+
 		}
 
 		try:
@@ -49,6 +50,7 @@ class Main:
 		self.path = path if path is not None else input('Insert new path: ')
 		self.loadType = loadType if loadType is not None else input("Choose image loading type:\n0) Grayscale Image\n1) Color image\n")
 		self.img = cv2.imread(self.path, int(self.loadType))
+		print(self.img.dtype)
 		if self.img.ndim == 2:
 			self.img = numpy.expand_dims(self.img, axis=2)
 
@@ -82,19 +84,21 @@ class Main:
 
 	# TODO: Add a way to choose kernel
 	def performConvolution(self):
-		self.img = convolution(self.img, kernel("gauss",8))
+		# self.img = convolution(self.img, (1/16)*numpy.array([[1, 2, 1], [2, 4, 2], [1, 2, 1]]))
+		self.img = convolution(self.img, numpy.array(gauss_kernel(8)))
+		print(self.img)
 
 	def sobel(self):
-		gradx = convolution(self.img, kernel("sobelx"))
-		grady = convolution(self.img, kernel("sobely"))
+		gradx = convolution(self.img, (1 / 8) * numpy.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]]))
+		grady = convolution(self.img, (1 / 8) * numpy.array([[1, 2, 1], [0, 0, 0], [-1, -2, -1]]))
 		self.img = numpy.sqrt(gradx ** 2 + grady ** 2).astype(numpy.uint8)
 		self.img = contrastStreching(self.img,numpy.min(self.img), numpy.max(self.img), 0, 255)
 
 	# TODO: Not working
 	def canny(self):
 
-		gradx = convolution(self.img, kernel("sobelx"))
-		grady = convolution(self.img, kernel("sobely"))
+		gradx = convolution(self.img, (1 / 8) * numpy.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]]))
+		grady = convolution(self.img, (1 / 8) * numpy.array([[1, 2, 1], [0, 0, 0], [-1, -2, -1]]))
 		grad = numpy.sqrt(gradx ** 2 + grady ** 2).astype(numpy.uint8)
 
 		tan = numpy.arctan(grady / gradx)
@@ -137,7 +141,7 @@ class Main:
 				#	self.img[i, j] = 128
 				#if (grad[i, j] > th):
 				#	self.img[i, j] = 255
-				
+
 	def mophology(self):
 		opt = input("Which kind of morphology operation do you want to do:\na) Dilatate\nb) Erode\nc) Opening\nd) Closing\ne) Gradient")
 		if(opt == 'a'):
