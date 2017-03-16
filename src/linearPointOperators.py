@@ -23,6 +23,7 @@ def contrastStreching(img, m = None, M = None, nm = None, nM = None):
 def threshold(img, threshold):
 	return ((img > threshold) * 255).astype(numpy.uint8)
 
+# TODO: Da rifare con chiamate numpy
 def otsu(histogram):
 	sigma = []
 	for t in range(len(histogram)):

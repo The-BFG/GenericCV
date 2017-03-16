@@ -11,6 +11,7 @@ def build(img, bins=''):
 def display(img, histogram):
 	h, w, c = img.shape
 
+	# TODO: Da trovare una migliore soluzione senza gli if
 	if(c == 1):
 		img = img[:,:,0]
 		cmap = 'gray'
