@@ -80,19 +80,20 @@ class Main:
 		self.img = threshold(self.img, otsu(self.histogram))
 
 	def performConvolution(self):
-		self.img = convolution(self.img, (1/16)*numpy.array([[1, 2, 1], [2, 4, 2], [1, 2, 1]]))
+		# self.img = convolution(self.img, (1/16)*numpy.array([[1, 2, 1], [2, 4, 2], [1, 2, 1]]))
+		self.img = convolution(self.img, numpy.array(gauss_kernel(8)))
 		print(self.img)
 
 	def sobel(self):
 		gradx = convolution(self.img, (1 / 8) * numpy.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]]))
 		grady = convolution(self.img, (1 / 8) * numpy.array([[1, 2, 1], [0, 0, 0], [-1, -2, -1]]))
-		self.img = numpy.sqrt(gradx ^ 2 + grady ^ 2).astype(numpy.uint8)
+		self.img = numpy.sqrt(gradx ** 2 + grady ** 2).astype(numpy.uint8)
 
 	def canny(self):
 
 		gradx = convolution(self.img, (1 / 8) * numpy.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]]))
 		grady = convolution(self.img, (1 / 8) * numpy.array([[1, 2, 1], [0, 0, 0], [-1, -2, -1]]))
-		grad = numpy.sqrt(gradx ^ 2 + grady ^ 2).astype(numpy.uint8)
+		grad = numpy.sqrt(gradx ** 2 + grady ** 2).astype(numpy.uint8)
 
 		tan = numpy.arctan(grady / gradx)
 		h, w, c = numpy.array(grad).shape

@@ -7,7 +7,9 @@ def convolution(img, kernel):
 	rowk = kernel[0]
 	colk = kernel.transpose()[0] / kernel[0,0]
 
-	# mat = [row_convolution(row, [1 / 4, 1 / 2, 1 / 4]) for row in img]
+	if not (abs(colk.reshape(-1,1).dot(rowk.reshape(1,-1)) - kernel) < exp(-15)).all():
+		print("Kernel not symmetric")
+		return None
 
 	mat = [row_convolution(row,  rowk) for row in img]
 	img = numpy.transpose(numpy.array(mat))
@@ -27,3 +29,25 @@ def row_convolution(a,b):
 	A = numpy.array(a)[index]
 
 	return numpy.dot(A.reshape(A.shape[:2]), numpy.array(b))
+
+from math import exp
+
+def gaussian(x, mu, sigma):
+	return exp( -(((x-mu)/(sigma))**2)/2.0 )
+
+def gauss_kernel(kernel_radius):
+	sigma = kernel_radius / 2.
+	row = numpy.array([gaussian(x, kernel_radius, sigma) for x in range(2 * kernel_radius + 1)])
+	kernel = row.reshape(-1, 1).dot(row.reshape(1, -1))
+	return kernel / numpy.sum(kernel)
+
+if __name__ == '__main__':
+	a = numpy.ones([7,7])
+
+	kernel = numpy.array([[1, 2, 3, 2, 1],[2, 4, 6, 4, 2],[3, 6, 9, 6, 3],[2, 4, 6, 4, 2],[1, 2, 3, 2, 1]])
+
+	kernel = gauss_kernel(3)
+
+	print(a)
+	print(numpy.array(kernel))
+	print(convolution(a, kernel))
