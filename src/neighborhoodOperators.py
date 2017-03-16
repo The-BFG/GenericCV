@@ -38,3 +38,30 @@ def gauss_kernel(kernel_radius):
 	row = numpy.array([gaussian(x, kernel_radius, sigma) for x in range(2 * kernel_radius + 1)])
 	kernel = row.reshape(-1, 1).dot(row.reshape(1, -1))
 	return kernel / numpy.sum(kernel)
+	
+def dilatate(img)
+	h,w,c = img.shape
+	for i in range(1,h-1)
+		for j in range(1,w-1)
+			img[i,j,:] = numpy.max(img[i-1:i+1,j-1:j+1,:])	
+	return img;
+
+def erode(img)
+	h,w,c = img.shape
+	for i in range(1,h-1)
+		for j in range(1,w-1)
+			img[i,j,:] = numpy.min(img[i-1:i+1,j-1:j+1,:])			
+	return img;	
+		
+def closing(img)
+	erode(dilatate(img));
+	return img;	
+	
+def opening(img)
+	dilatate(erode(img));
+	
+	
+	
+	
+	
+
