@@ -27,7 +27,6 @@ class Main:
 			'8': ("Convolution", self.performConvolution),
 			'9': ("Sobel", self.sobel),
 			'10': ("Canny", self.canny)
-
 		}
 
 		try:
@@ -49,7 +48,6 @@ class Main:
 		self.path = path if path is not None else input('Insert new path: ')
 		self.loadType = loadType if loadType is not None else input("Choose image loading type:\n0) Grayscale Image\n1) Color image\n")
 		self.img = cv2.imread(self.path, int(self.loadType))
-		print(self.img.dtype)
 		if self.img.ndim == 2:
 			self.img = numpy.expand_dims(self.img, axis=2)
 
@@ -84,7 +82,6 @@ class Main:
 	# TODO: Add a way to choose kernel
 	def performConvolution(self):
 		self.img = convolution(self.img, kernel("gauss",8))
-		print(self.img)
 
 	def sobel(self):
 		gradx = convolution(self.img, kernel("sobelx"))
