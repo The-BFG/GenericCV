@@ -88,6 +88,7 @@ class Main:
 		gradx = convolution(self.img, (1 / 8) * numpy.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]]))
 		grady = convolution(self.img, (1 / 8) * numpy.array([[1, 2, 1], [0, 0, 0], [-1, -2, -1]]))
 		self.img = numpy.sqrt(gradx ** 2 + grady ** 2).astype(numpy.uint8)
+		self.img = contrastStreching(self.img,numpy.min(self.img), numpy.max(self.img), 0, 255)
 
 	def canny(self):
 
