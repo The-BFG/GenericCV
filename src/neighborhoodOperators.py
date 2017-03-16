@@ -3,7 +3,7 @@ import numpy, math
 def kernel(name, k = 3):
 	return {
 		'sobelx': numpy.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]])/8,
-		'sobelx': numpy.array([[1, 2, 1], [0, 0, 0], [-1, -2, -1]])/8,
+		'sobely': numpy.array([[1, 2, 1], [0, 0, 0], [-1, -2, -1]])/8,
 		'gauss': gauss_kernel(k)
 	}.get(name)
 
