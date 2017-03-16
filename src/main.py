@@ -83,21 +83,20 @@ class Main:
 
 	# TODO: Add a way to choose kernel
 	def performConvolution(self):
-		# self.img = convolution(self.img, (1/16)*numpy.array([[1, 2, 1], [2, 4, 2], [1, 2, 1]]))
-		self.img = convolution(self.img, numpy.array(gauss_kernel(8)))
+		self.img = convolution(self.img, kernel("gauss",8))
 		print(self.img)
 
 	def sobel(self):
-		gradx = convolution(self.img, (1 / 8) * numpy.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]]))
-		grady = convolution(self.img, (1 / 8) * numpy.array([[1, 2, 1], [0, 0, 0], [-1, -2, -1]]))
+		gradx = convolution(self.img, kernel("sobelx"))
+		grady = convolution(self.img, kernel("sobely"))
 		self.img = numpy.sqrt(gradx ** 2 + grady ** 2).astype(numpy.uint8)
 		self.img = contrastStreching(self.img,numpy.min(self.img), numpy.max(self.img), 0, 255)
 
 	# TODO: Not working
 	def canny(self):
 
-		gradx = convolution(self.img, (1 / 8) * numpy.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]]))
-		grady = convolution(self.img, (1 / 8) * numpy.array([[1, 2, 1], [0, 0, 0], [-1, -2, -1]]))
+		gradx = convolution(self.img, kernel("sobelx"))
+		grady = convolution(self.img, kernel("sobely"))
 		grad = numpy.sqrt(gradx ** 2 + grady ** 2).astype(numpy.uint8)
 
 		tan = numpy.arctan(grady / gradx)
