@@ -11,8 +11,10 @@ class Main:
 
 		self.path, self.loadType, self.histogram = None, None, None
 
+		# TODO: Aggiungere opzione "-c commandi:..."
 		self.options = {"-i": "self.path", "-t": "self.loadType"}
 
+		# TODO: Aggiungere sottomenu
 		self.menu = {
 			'0': ("Exit program", sys.exit),
 			'1': ("Load image", self.load),
@@ -79,6 +81,7 @@ class Main:
 		self.histogram = histogram.build(self.img, bins=256)
 		self.img = threshold(self.img, otsu(self.histogram))
 
+	# TODO: Add a way to choose kernel
 	def performConvolution(self):
 		# self.img = convolution(self.img, (1/16)*numpy.array([[1, 2, 1], [2, 4, 2], [1, 2, 1]]))
 		self.img = convolution(self.img, numpy.array(gauss_kernel(8)))
@@ -90,6 +93,7 @@ class Main:
 		self.img = numpy.sqrt(gradx ** 2 + grady ** 2).astype(numpy.uint8)
 		self.img = contrastStreching(self.img,numpy.min(self.img), numpy.max(self.img), 0, 255)
 
+	# TODO: Not working
 	def canny(self):
 
 		gradx = convolution(self.img, (1 / 8) * numpy.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]]))
