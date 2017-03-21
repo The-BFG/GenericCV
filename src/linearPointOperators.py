@@ -4,16 +4,16 @@ from itertools import product
 
 def contrastBrightness(img, contrast = None, brightness = None):
 
-	contrast = contrast if contrast is not None else float(input("Insert the value of the contrast: "))
-	brightness = brightness if brightness is not None else float(input("Insert the value of the brightness: "))
+	contrast = contrast if contrast else float(input("Insert the value of the contrast: "))
+	brightness = brightness if brightness else float(input("Insert the value of the brightness: "))
 
 	return (img * contrast + brightness).astype(numpy.uint8)
 
 def contrastStreching(img, m = None, M = None, nm = None, nM = None):
-	m = m if m is not None else int(input("Insert the minimum value: [min] ") or numpy.min(img))
-	M = M if M is not None else int(input("Insert the maximum value: [max] ") or numpy.max(img))
-	nm = nm if nm is not None else int(input("Insert the minimum value: [0] ") or 0)
-	nM = nM if nM is not None else int(input("Insert the maximum value: [255] ") or 255)
+	m = m if m else int(input("Insert the minimum value: [min] ") or numpy.min(img))
+	M = M if M else int(input("Insert the maximum value: [max] ") or numpy.max(img))
+	nm = nm if nm else int(input("Insert the minimum value: [0] ") or 0)
+	nM = nM if nM else int(input("Insert the maximum value: [255] ") or 255)
 
 	r = (nM - nm) / (M - m)
 

@@ -27,7 +27,8 @@ class Main:
 			'8': ("Convolution", self.performConvolution),
 			'9': ("Sobel", self.sobel),
 			'10': ("Canny", self.canny),
-			'11': ("Morphology", self.morphology)
+			'11': ("Morphology", self.morphology),
+			'12': ("Labeling", self.labeling)
 		}
 
 		try:
@@ -38,7 +39,7 @@ class Main:
 		for opt, arg in opts:
 			exec(self.options[opt] + ' = arg')
 
-		if self.path is not None:
+		if self.path:
 			self.load(self.path, self.loadType)
 
 		while True:
@@ -46,8 +47,8 @@ class Main:
 			self.menu[input()][1]()
 
 	def load(self, path = None, loadType = None):
-		self.path = path if path is not None else input('Insert new path: ')
-		self.loadType = loadType if loadType is not None else input("Choose image loading type:\n0) Grayscale Image\n1) Color image\n")
+		self.path = path if path else input('Insert new path: ')
+		self.loadType = loadType if loadType else input("Choose image loading type:\n0) Grayscale Image\n1) Color image\n")
 		self.img = cv2.imread(self.path, int(self.loadType))
 		if self.img.ndim == 2:
 			self.img = numpy.expand_dims(self.img, axis=2)
@@ -93,6 +94,11 @@ class Main:
 	# TODO: Not working
 	def canny(self):
 
+		self.img = cv2.Canny(self.img,10,200)
+		return
+
+		self.img = convolution(self.img, kernel("gauss", 8))
+
 		gradx = convolution(self.img, kernel("sobel"))
 		grady = convolution(self.img, kernel("sobel").transpose())
 		grad = numpy.sqrt(gradx ** 2 + grady ** 2).astype(numpy.uint8)
@@ -104,8 +110,12 @@ class Main:
 		tl = 0.90 * max
 		th = 0.99 * max
 
-		for i in range(1,h-1):
-			for j in range(1,w-1):
+		# IBW = Gradiente dopo una soglia
+		soglia = (numpy.max(grad)+ numpy.min(grad)) /2
+		grad = (grad > soglia)*255
+
+		for i in range(1, h - 1):
+			for j in range(1, w - 1):
 				m = tan[i,j]
 				if gradx[i,j] > grady[i,j]:
 					if m > 0:
@@ -123,10 +133,12 @@ class Main:
 						gradP2 = grad[i + 1, j + 1] * m + grad[i, j + 1] * (1 - m)
 				if(grad[i,j] >= gradP1 and grad[i,j] >= gradP2):
 					# Valid edge
-					self.img[i, j] = 255/max*grad[i,j]
+					self.img[i, j] = 255 /max*grad[i,j]
 				else:
 					self.img[i,j] = 0
 
+		# self.img = grad
+		"""
 		for i in range(1, h - 1):
 			for j in range(1, w - 1):
 				if (self.img[i, j] > tl and (self.img[i - 1, j - 1] > th or self.img[i - 1, j] > th or self.img[i - 1, j + 1] > th or self.img[i, j - 1] > th or self.img[i, j + 1] > th or self.img[i + 1, j - 1] > th or self.img[i + 1, j] > th or self.img[i + 1, j] > th)):
@@ -137,21 +149,21 @@ class Main:
 				#	self.img[i, j] = 128
 				#if (grad[i, j] > th):
 				#	self.img[i, j] = 255
-				
+		"""
+
 	def morphology(self):
-		opt = input("Which kind of morphology operation do you want to do:\na) Dilatate\nb) Erode\nc) Opening\nd) Closing\ne) Gradient")
-		if(opt == 'a'):
-			self.img = dilatate(self.img)
-		elif(opt == 'b'):
-			self.img = erode(self.img)
-		elif(opt == 'c'):
-			self.img = opening(self.img)
-		elif(opt == 'd'):
-			self.img = closing(self.img)
-		elif(opt == 'e'):
-			self.img = gradient(self.img)
-		else:
-			print("No valid input.")	
+		menu = {
+			'a': ("Dilatate",dilatate),
+			'b': ("Erode", erode),
+			'c': ("Opening", opening),
+			'd': ("Closing", closing),
+			'e': ("Gradient", gradient)
+		 }
+
+		print("Which kind of morphology operation do you want to do:\n" + "\n".join("%c) %s" % (k, v[0]) for k, v in menu.items()))
+
+	def labeling(self):
+		pass
 
 if __name__ == "__main__":
 	Main(sys.argv[1:])
