@@ -12,9 +12,11 @@ class Main:
 		self.path, self.loadType, self.histogram = None, None, None
 
 		# TODO: Aggiungere opzione "-c commandi:..."
+		# TODO: Aggiungere opzione per fare solo chiamate cv2
 		self.options = {"-i": "self.path", "-t": "self.loadType"}
 
 		# TODO: Aggiungere sottomenu
+		# TODO: Aggiungere salva immagine
 		self.menu = {
 			'0': ("Exit program", sys.exit),
 			'1': ("Load image", self.load),
@@ -55,7 +57,7 @@ class Main:
 
 	def show(self):
 
-		cv2.namedWindow('Image',cv2.WINDOW_FREERATIO)
+		cv2.namedWindow('Image', cv2.WINDOW_FREERATIO)
 		cv2.resizeWindow('Image', 100, 100)
 		cv2.imshow('Image', self.img)
 
@@ -81,7 +83,6 @@ class Main:
 		self.histogram = histogram.build(self.img, bins=256)
 		self.img = threshold(self.img, otsu(self.histogram))
 
-	# TODO: Add a way to choose kernel
 	def performConvolution(self):
 		self.img = convolution(self.img, kernel("gauss",8))
 
@@ -138,18 +139,7 @@ class Main:
 					self.img[i,j] = 0
 
 		# self.img = grad
-		"""
-		for i in range(1, h - 1):
-			for j in range(1, w - 1):
-				if (self.img[i, j] > tl and (self.img[i - 1, j - 1] > th or self.img[i - 1, j] > th or self.img[i - 1, j + 1] > th or self.img[i, j - 1] > th or self.img[i, j + 1] > th or self.img[i + 1, j - 1] > th or self.img[i + 1, j] > th or self.img[i + 1, j] > th)):
-					self.img[i, j] = 128
-				if (self.img[i, j] > th):
-					self.img[i, j] = 255
-				#if (grad[i, j] > tl and (grad[i - 1, j - 1] > th or grad[i - 1, j] > th or grad[i - 1, j + 1] > th or grad[i, j - 1] > th or grad[i, j + 1] > th or grad[i + 1, j - 1] > th or grad[i + 1, j] > th or grad[i + 1, j] > th)):
-				#	self.img[i, j] = 128
-				#if (grad[i, j] > th):
-				#	self.img[i, j] = 255
-		"""
+
 
 	def morphology(self):
 		menu = {
@@ -161,6 +151,8 @@ class Main:
 		 }
 
 		print("Which kind of morphology operation do you want to do:\n" + "\n".join("%c) %s" % (k, v[0]) for k, v in menu.items()))
+
+		self.img = menu[input()][1](self.img)
 
 	def labeling(self):
 		pass
