@@ -9,40 +9,55 @@ class Main:
 
 	def __init__(self, argv):
 
-		self.path, self.loadType, self.histogram = None, None, None
+		self.path, self.loadType, self.commands, self.histogram = None, None, None, None
 
 		# TODO: Aggiungere opzione "-c commandi:..."
 		# TODO: Aggiungere opzione per fare solo chiamate cv2
-		self.options = {"-i": "self.path", "-t": "self.loadType"}
+		self.options = {"-i": "self.path", "-t": "self.loadType", "-c": "self.commands"}
 
-		# TODO: Aggiungere sottomenu
-		# TODO: Aggiungere salva immagine
 		self.menu = {
 			'0': ("Exit program", sys.exit),
-			'1': ("Load image", self.load),
-			'2': ("Show image", self.show),
-			'3': ("Generate the image histogram", self.createHistogram),
-			'4': ("Change contrast and brightness", self.changeContrastBrightness),
-			'5': ("Apply contrast stretching", self.stretchContrast),
-			'6': ("Make a threshold", self.makeThreshold),
-			'7': ("Otzu threashold on the image", self.makeOtsu),
-			'8': ("Convolution", self.performConvolution),
-			'9': ("Sobel", self.sobel),
-			'10': ("Canny", self.canny),
-			'11': ("Morphology", self.morphology),
-			'12': ("Labeling", self.labeling)
+			'1': ("Image", {
+				'a': ('Load image', self.load),
+				'b': ('Show image', self.show),
+				'c': ('Save image', self.save)
+			}),
+			'2': ("Linear point operations", {
+				'a': ("Generate the image histogram", self.createHistogram),
+				'b': ("Change contrast and brightness", self.changeContrastBrightness),
+				'c': ("Apply contrast stretching", self.stretchContrast),
+				'd': ("Make a threshold", self.makeThreshold),
+				'e': ("Otzu threashold on the image", self.makeOtsu),
+			}),
+			'3': ('Neighborhood operations', {
+				'a': ("Convolution", self.performConvolution),
+				'b': ("Sobel", self.sobel),
+				'c': ("Canny", self.canny),
+				'd': ("Segmentation", self.segmentation),
+				'd': ("Morphology", self.morphology),
+				'e': ("Labeling", self.labeling)
+			}),
+			'4': ('Transformations', {
+				'a': ("Translation", self.translation),
+				'b': ("Scaling", self.translation),
+				'c': ("Rotation", self.translation),
+				'd': ("Projection", self.translation),
+
+			})
 		}
 
 		try:
-			opts, args = getopt.getopt(argv, "i:t:")
+			opts, args = getopt.getopt(argv, "i:t:c:")
 		except getopt.GetoptError:
-			print('main.py -i <inputfile> -t <loadtype>')
+			print('main.py -i <inputfile> -t <loadtype> -c <commands>')
 			sys.exit(2)
 		for opt, arg in opts:
 			exec(self.options[opt] + ' = arg')
 
 		if self.path:
 			self.load(self.path, self.loadType)
+
+
 
 		while True:
 			print("Choose:\n" + "\n".join("%d) %s" % (int(k), v[0]) for k, v in sorted(self.menu.items(),key=lambda a: int(a[0]) if(int(a[0])>0) else sys.maxsize)))
@@ -71,7 +86,6 @@ class Main:
 
 	def changeContrastBrightness(self):
 		self.img = contrastBrightness(self.img)
-		print(self.img.shape)
 
 	def stretchContrast(self):
 		self.img = contrastStreching(self.img)
@@ -150,7 +164,7 @@ class Main:
 			'e': ("Gradient", gradient)
 		 }
 
-		print("Which kind of morphology operation do you want to do:\n" + "\n".join("%c) %s" % (k, v[0]) for k, v in menu.items()))
+		print("Which kind of morphology operation do you want to do:\n" + "\n".join("%c) %s" % (k, v[0]) for k, v in sorted(menu.items())))
 
 		self.img = menu[input()][1](self.img)
 
